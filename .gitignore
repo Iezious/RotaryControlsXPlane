@@ -50,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+/RotaryJoystick/RotaryJoystick.depend
+/RotaryJoystick/RotaryJoystick.elay
+/RotaryJoystick/RotaryJoystick_build_log.html
