@@ -37,6 +37,9 @@ union
 	uint8_t buffer[8];
 } JoystickReport;
 
+uint32_t prevReport[2] = {0, 0};
+
+
 inline static void SpinWait(uint32_t mks)
 {
     volatile uint32_t w = mks * 36;
@@ -94,6 +97,17 @@ static void ScanSwitches()
     }
 }
 
+static bool IsReportChanged()
+{
+    return JoystickReport.bits[0] != prevReport[0] || JoystickReport.bits[1] != prevReport[1];
+}
+
+static void StoreReport()
+{
+    prevReport[0] = JoystickReport.bits[0];
+    prevReport[1] = JoystickReport.bits[1];
+}
+
 int main(void)
 {
     HAL_Init();
@@ -102,20 +116,24 @@ int main(void)
     MX_USB_DEVICE_Init();
     MX_NVIC_Init();
 
-    HAL_Delay(5);
+    HAL_Delay(100);
+
     while (1)
     {
-      uint32_t start = HAL_GetTick();
+        uint32_t start = HAL_GetTick();
 
-      while(HAL_GetTick() - start < 10)
-      {
+        while(HAL_GetTick() - start < 10)
+        {
           SpinWait(50);
           ScanButtons();
           ScanSwitches();
-      }
+        }
 
-      USBD_HID_SendReport(&hUsbDeviceFS, JoystickReport.buffer, 5);
-      CleanReport();
+        if(IsReportChanged())
+            USBD_HID_SendReport(&hUsbDeviceFS, JoystickReport.buffer, 5);
+
+        StoreReport();
+        CleanReport();
     }
 }
 
