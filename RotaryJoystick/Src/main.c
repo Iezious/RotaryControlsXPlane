@@ -8,14 +8,14 @@
 #define LINES   5
 #define ROTS    3
 
-uint8_t mx_line_gpio[LINES] = {MX_LINE_0_GPIO, MX_LINE_1_GPIO, MX_LINE_2_GPIO, MX_LINE_3_GPIO, MX_LINE_4_GPIO};
-uint8_t mx_line_pins[LINES] = {MX_LINE_0_PIN, MX_LINE_1_PIN, MX_LINE_2_PIN, MX_LINE_3_PIN, MX_LINE_4_PIN};
+GPIO_TypeDef* mx_line_gpio[LINES] = {MX_LINE_0_GPIO, MX_LINE_1_GPIO, MX_LINE_2_GPIO, MX_LINE_3_GPIO, MX_LINE_4_GPIO};
+uint16_t mx_line_pins[LINES] = {MX_LINE_0_PIN, MX_LINE_1_PIN, MX_LINE_2_PIN, MX_LINE_3_PIN, MX_LINE_4_PIN};
 
-uint8_t mx_row_gpio[ROWS] = {MX_ROW_0_GPIO, MX_ROW_1_GPIO, MX_ROW_2_GPIO, MX_ROW_3_GPIO, MX_ROW_4_GPIO};
-uint8_t mx_row_pins[ROWS] = {MX_LINE_0_PIN, MX_LINE_1_PIN, MX_LINE_2_PIN, MX_LINE_3_PIN, MX_LINE_4_PIN};
+GPIO_TypeDef* mx_row_gpio[ROWS] = {MX_ROW_0_GPIO, MX_ROW_1_GPIO, MX_ROW_2_GPIO, MX_ROW_3_GPIO, MX_ROW_4_GPIO};
+uint16_t mx_row_pins[ROWS] = {MX_LINE_0_PIN, MX_LINE_1_PIN, MX_LINE_2_PIN, MX_LINE_3_PIN, MX_LINE_4_PIN};
 
-uint8_t rot_sw_gpio[ROTS] = {ROT1_GPIO_C, ROT2_GPIO_C, ROT3_GPIO_C};
-uint8_t rot_sw_pins[ROTS] = {ROT1_PIN_C, ROT2_PIN_C, ROT3_PIN_C};
+GPIO_TypeDef* rot_sw_gpio[ROTS] = {ROT1_GPIO_C, ROT2_GPIO_C, ROT3_GPIO_C};
+uint16_t rot_sw_pins[ROTS] = {ROT1_PIN_C, ROT2_PIN_C, ROT3_PIN_C};
 uint8_t rot_sw_buttons[ROTS] = {ROT1_SW, ROT2_SW, ROT3_SW};
 
 uint8_t mx_buttons[LINES*ROWS] = {
@@ -49,7 +49,7 @@ static inline void CleanReport()
     JoystickReport.bits[1] = 0;
 }
 
-static inline void SetBit(uint16_t bit)
+static inline void SetBit(uint8_t bit)
 {
     uint16_t idx = bit < 32 ? 0 : 1;
     uint16_t offset = bit < 32 ? bit : bit - 32;
