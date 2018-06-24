@@ -53,3 +53,7 @@ dkms.conf
 /RotaryJoystick/RotaryJoystick.depend
 /RotaryJoystick/RotaryJoystick.elay
 /RotaryJoystick/RotaryJoystick_build_log.html
+.vs/
+Debug/
+CodeDB/
+.vscode/
