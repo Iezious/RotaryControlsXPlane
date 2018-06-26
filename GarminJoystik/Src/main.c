@@ -50,6 +50,7 @@
 #include "main.h"
 #include "stm32f1xx_hal.h"
 #include "usb_device.h"
+#include "joylogic.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -107,16 +108,18 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_Delay(1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+
+    JoystickCycle();
 
   }
   /* USER CODE END 3 */
