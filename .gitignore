@@ -57,3 +57,4 @@ dkms.conf
 Debug/
 CodeDB/
 .vscode/
+GarminJoystick/VisualGDBCache/
