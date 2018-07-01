@@ -60,9 +60,6 @@
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\StartupFiles\startup_stm32f103xb.c">
       <Filter>Source files\Device-specific files</Filter>
     </ClCompile>
-    <ClCompile Include="$(BSP_ROOT)\STM32_USB_Device_Library\Class\CustomHID\Src\usbd_customhid.c">
-      <Filter>Source files\Device-specific files\USB Device</Filter>
-    </ClCompile>
     <ClCompile Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Src\usbd_core.c">
       <Filter>Source files\Device-specific files\USB Device</Filter>
     </ClCompile>
@@ -254,9 +251,6 @@
     </ClInclude>
     <ClInclude Include="stm32f1xx_hal_conf.h">
       <Filter>Header files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BSP_ROOT)\STM32_USB_Device_Library\Class\CustomHID\Inc\usbd_customhid.h">
-      <Filter>Header files\Device-specific files\USB Device</Filter>
     </ClInclude>
     <ClInclude Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Inc\usbd_core.h">
       <Filter>Header files\Device-specific files\USB Device</Filter>
@@ -543,9 +537,24 @@
     <ClCompile Include="usb_device.c">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="joylogic.h">
+      <Filter>Header files</Filter>
+    </ClCompile>
+    <ClCompile Include="usbd_hid.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="joylogic.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="usbd_custom_hid_if.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="mxconstants.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="usbd_hid.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

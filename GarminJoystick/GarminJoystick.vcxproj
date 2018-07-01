@@ -80,13 +80,16 @@
   <ItemGroup />
   <ItemGroup>
     <ClCompile Include="GarminJoystick.cpp" />
+    <ClCompile Include="joylogic.c" />
+    <ClCompile Include="joylogic.h" />
     <ClCompile Include="usbd_conf.c" />
     <ClCompile Include="usbd_desc.c" />
     <ClCompile Include="system_stm32f1xx.c" />
     <ClCompile Include="usb_device.c" />
+    <ClCompile Include="usbd_hid.c" />
+    <ClInclude Include="usbd_hid.h" />
     <None Include="stm32.mak" />
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\StartupFiles\startup_stm32f103xb.c" />
-    <ClCompile Include="$(BSP_ROOT)\STM32_USB_Device_Library\Class\CustomHID\Src\usbd_customhid.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Src\usbd_core.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Src\usbd_ioreq.c" />
@@ -148,11 +151,11 @@
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_usart.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_usb.c" />
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_utils.c" />
+    <ClInclude Include="mxconstants.h" />
     <ClInclude Include="usbd_conf.h" />
     <ClInclude Include="usbd_custom_hid_if.h" />
     <ClInclude Include="usbd_desc.h" />
     <ClInclude Include="stm32f1xx_hal_conf.h" />
-    <ClInclude Include="$(BSP_ROOT)\STM32_USB_Device_Library\Class\CustomHID\Inc\usbd_customhid.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Inc\usbd_core.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Inc\usbd_ctlreq.h" />
     <ClInclude Include="$(BSP_ROOT)\STM32_USB_Device_Library\Core\Inc\usbd_def.h" />

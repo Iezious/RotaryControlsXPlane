@@ -3,6 +3,7 @@
 #include "usbd_customhid.h"
 #include "stm32f1xx_hal_pcd.h"
 #include "usbd_custom_hid_if.h"
+#include "joylogic.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -152,6 +153,9 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 int main(void)
 {
 	HAL_Init();
+
+
+
 	SystemClock_Config();
 	USBD_Init(&USBD_Device, &VCP_Desc, 0);
 
@@ -161,6 +165,6 @@ int main(void)
 
 	for (;;)
 	{
-
+		JoystickCycle();
 	}
 }

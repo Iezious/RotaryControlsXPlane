@@ -56,7 +56,7 @@ extern "C" {
 #endif
 
 	/* Includes ------------------------------------------------------------------*/
-#include "usbd_customhid.h"
+#include "usbd_hid.h"
 
 	/* USER CODE BEGIN INCLUDE */
 

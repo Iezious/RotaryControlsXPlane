@@ -123,14 +123,14 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
 	    0x05, 0x01,	                    // USAGE_PAGE (Generic Desktop)
 	    0x09, 0x04,	                    // USAGE (Joystick)
 	    0xa1, 0x01, 	                // COLLECTION (Application)
-	    0x05, 0x02, 	                //   USAGE_PAGE (Simulation Controls)
 	    0x05, 0x09,	                    //   USAGE_PAGE (Button)
 	    0x19, 0x01,                     //   USAGE_MINIMUM (Button 1)
-	    0x29, 0x28,	                    //   USAGE_MAXIMUM (Button 40)
+	    0x29, 0x40,	                    //   USAGE_MAXIMUM (Button 64)
 	    0x15, 0x00,	                    //   LOGICAL_MINIMUM (0)
 	    0x25, 0x01,                     //   LOGICAL_MAXIMUM (1)
 	    0x75, 0x01,                     //   REPORT_SIZE (1)
 	    0x95, 0x40, 	                //   REPORT_COUNT (64)
+		0x81, 0x02,						// INPUT(data, var, abs)
 		0xC0                            // END_COLLECTION	
 };
 
@@ -146,7 +146,7 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
   * @brief Public variables.
   * @{
   */
-extern USBD_HandleTypeDef hUsbDeviceFS;
+//extern USBD_HandleTypeDef hUsbDeviceFS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 
