@@ -1,0 +1,35 @@
+
+#n/** Configure pins as #n #t#t #t* Analog #n #t#t #t* Input #n #t#t #t* Output#n #t#t #t* EVENT_OUT#n #t#t #t* EXTI
+*/
+static void MX_GPIO_Init(void)
+{
+#n
+#tGPIO_InitTypeDef GPIO_InitStruct;
+#n#t/* GPIO Ports Clock Enable */
+#t__HAL_RCC_GPIOC_CLK_ENABLE();
+#t__HAL_RCC_GPIOD_CLK_ENABLE();
+#t__HAL_RCC_GPIOA_CLK_ENABLE();
+#t__HAL_RCC_GPIOB_CLK_ENABLE();
+#n#t/*Configure GPIO pins : PC13 PC14 PC15 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_PULLUP;
+#tHAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+#n#t/*Configure GPIO pins : PA0 PA1 PA2 PA3 #n#t#t#t#t#t#t#t#t#t#t#t#t#t PA4 PA5 PA6 PA7 #n#t#t#t#t#t#t#t#t#t#t#t#t#t PA8 PA9 PA10 PA15 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_15;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_PULLUP;
+#tHAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#n#t/*Configure GPIO pins : PB0 PB1 PB2 PB10 #n#t#t#t#t#t#t#t#t#t#t#t#t#t PB11 PB12 PB3 PB4 #n#t#t#t#t#t#t#t#t#t#t#t#t#t PB5 PB6 PB7 PB8 #n#t#t#t#t#t#t#t#t#t#t#t#t#t PB9 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_3|GPIO_PIN_4 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8 #n#t#t#t#t#t#t#t#t#t#t#t#t#t|GPIO_PIN_9;
+#tGPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+#tGPIO_InitStruct.Pull = GPIO_PULLUP;
+#tHAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#n#t/*Configure GPIO pins : PB13 PB14 PB15 */
+#tGPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+#tGPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+#tGPIO_InitStruct.Pull = GPIO_PULLUP;
+#tHAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#n
+}
+#n
