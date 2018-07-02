@@ -546,6 +546,9 @@
     <ClCompile Include="joylogic.c">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="stm32F1xx_it.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="usbd_custom_hid_if.h">
@@ -555,6 +558,9 @@
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="usbd_hid.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="stm32F1xx_it.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

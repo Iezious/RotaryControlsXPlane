@@ -190,7 +190,7 @@ __ALIGN_BEGIN static uint8_t USBD_CUSTOM_HID_CfgDesc[USB_CUSTOM_HID_CONFIG_DESC_
 	CUSTOM_HID_EPIN_SIZE,
 	/*wMaxPacketSize: 2 Byte max */
 	0x00,
-	0x20, /*bInterval: Polling Interval (20 ms)*/
+	0x0A, /*bInterval: Polling Interval (10 ms)*/
 	/* 34 */
 #ifdef EPOUT  
 	0x07, /* bLength: Endpoint Descriptor size */
@@ -427,9 +427,14 @@ uint8_t USBD_CUSTOM_HID_SendReport(USBD_HandleTypeDef  *pdev,
 				CUSTOM_HID_EPIN_ADDR,                                      
 				report,
 				len);
+
+			return USBD_OK;
 		}
+
+		return USBD_BUSY;
 	}
-	return USBD_OK;
+
+	return USBD_FAIL;
 }
 
 /**

@@ -4,19 +4,15 @@
 #include "stm32f1xx_hal_pcd.h"
 #include "usbd_custom_hid_if.h"
 #include "joylogic.h"
+#include <usbd_core.h>
+#include <usbd_desc.h>
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-	#include <usbd_core.h>
-	#include <usbd_desc.h>
 
 	USBD_HandleTypeDef USBD_Device;
-	void SysTick_Handler(void);
-	void OTG_FS_IRQHandler(void);
-	void OTG_HS_IRQHandler(void);
-	void USB_LP_CAN1_RX0_IRQHandler(void);
-
 	extern PCD_HandleTypeDef hpcd;
 	
 #ifdef __cplusplus
@@ -105,60 +101,17 @@ void SystemClock_Config(void)
 }
 #endif
 
-void SysTick_Handler(void)
-{
-	HAL_IncTick();
-	HAL_SYSTICK_IRQHandler();
-}
-
-#ifdef USE_USB_FS
-void OTG_FS_IRQHandler(void)
-{
-	HAL_PCD_IRQHandler(&hpcd);
-}
-#elif defined(USE_USB_HS)
-void OTG_HS_IRQHandler(void)
-{
-	HAL_PCD_IRQHandler(&hpcd);
-}
-#else
-#error USB peripheral type not defined
-#endif
-
-/*
-	This is a basic USB CDC device sample based on the ST USB library.
-	To test it out:
-		1. Install the ST VCP drivers (http://www.st.com/web/en/catalog/tools/PF257938)
-		2. Connect to the virtual COM port using SmarTTY or any other terminal program
-		3. Type some characters and observe the output
-	Read more about the sample: http://visualgdb.com/tutorials/arm/stm32/usb/
-*/
-
-/**
-* @brief This function handles USB low priority or CAN RX0 interrupts.
-*/
-
-     
-void USB_LP_CAN1_RX0_IRQHandler(void)
-{
-	/* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 0 */
-
-	/* USER CODE END USB_LP_CAN1_RX0_IRQn 0 */
-	HAL_PCD_IRQHandler(&hpcd);
-	/* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
-
-	/* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
-}
 
 int main(void)
 {
 	HAL_Init();
 
-
-
 	SystemClock_Config();
-	USBD_Init(&USBD_Device, &VCP_Desc, 0);
 
+	JoystickInit();
+
+
+	USBD_Init(&USBD_Device, &VCP_Desc, 0);
 	USBD_RegisterClass(&USBD_Device, &USBD_CUSTOM_HID);
 	USBD_CUSTOM_HID_RegisterInterface(&USBD_Device, &USBD_CustomHID_fops_FS);
 	USBD_Start(&USBD_Device);

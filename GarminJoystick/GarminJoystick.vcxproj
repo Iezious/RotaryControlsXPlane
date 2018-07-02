@@ -82,11 +82,13 @@
     <ClCompile Include="GarminJoystick.cpp" />
     <ClCompile Include="joylogic.c" />
     <ClCompile Include="joylogic.h" />
+    <ClCompile Include="stm32F1xx_it.c" />
     <ClCompile Include="usbd_conf.c" />
     <ClCompile Include="usbd_desc.c" />
     <ClCompile Include="system_stm32f1xx.c" />
     <ClCompile Include="usb_device.c" />
     <ClCompile Include="usbd_hid.c" />
+    <ClInclude Include="stm32F1xx_it.h" />
     <ClInclude Include="usbd_hid.h" />
     <None Include="stm32.mak" />
     <ClCompile Include="$(BSP_ROOT)\STM32F1xxxx\StartupFiles\startup_stm32f103xb.c" />
