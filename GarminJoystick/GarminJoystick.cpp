@@ -116,8 +116,6 @@ int main(void)
 	USBD_CUSTOM_HID_RegisterInterface(&USBD_Device, &USBD_CustomHID_fops_FS);
 	USBD_Start(&USBD_Device);
 
-	for (;;)
-	{
-		JoystickCycle();
-	}
+	JoystickCycle();
+	
 }

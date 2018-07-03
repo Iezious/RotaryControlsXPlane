@@ -24,6 +24,16 @@ GPIO_TypeDef* rot_sw_gpio[ROTS] = { ROT1_GPIO_C, ROT2_GPIO_C, ROT3_GPIO_C };
 uint16_t rot_sw_pins[ROTS] = { ROT1_PIN_C, ROT2_PIN_C, ROT3_PIN_C };
 uint8_t rot_sw_buttons[ROTS] = { ROT1_SW, ROT2_SW, ROT3_SW };
 
+GPIO_TypeDef* rot_gpio_a[ROTS*2] = { ROT1_GPIO_A1, ROT1_GPIO_A2, ROT2_GPIO_A1, ROT2_GPIO_A2, ROT3_GPIO_A1, ROT3_GPIO_A2};
+uint16_t rot_pins_a[ROTS * 2] = { ROT1_PIN_A1, ROT1_PIN_A2, ROT2_PIN_A1, ROT2_PIN_A2, ROT3_PIN_A1, ROT3_PIN_A2 };
+
+GPIO_TypeDef* rot_gpio_b[ROTS*2] = { ROT1_GPIO_B1, ROT1_GPIO_B2, ROT2_GPIO_B1, ROT2_GPIO_B2, ROT3_GPIO_B1, ROT3_GPIO_B2};
+uint16_t rot_pins_b[ROTS * 2] = { ROT1_PIN_B1, ROT1_PIN_B2, ROT2_PIN_B1, ROT2_PIN_B2, ROT3_PIN_B1, ROT3_PIN_B2 };
+
+uint8_t rot_bits_up[ROTS*2] = { ROT1_L1_UP, ROT1_L2_UP, ROT2_L1_UP, ROT2_L2_UP, ROT3_L1_UP, ROT3_L2_UP};
+uint8_t rot_bits_dn[ROTS*2] = { ROT1_L1_DN, ROT1_L2_DN, ROT2_L1_DN, ROT2_L2_DN, ROT3_L1_DN, ROT3_L2_DN};
+
+
 uint8_t mx_buttons[LINES*ROWS] = {
 	MX_BUTTON_0_0,
 	MX_BUTTON_0_1,
@@ -52,13 +62,13 @@ uint8_t mx_buttons[LINES*ROWS] = {
 	MX_BUTTON_4_4,
 };
 
-union
+typedef union
 {
 	uint32_t bits[2];
 	uint8_t buffer[8];
-} JoystickReport;
+} TJoystickReport;
 
-volatile uint32_t prevReport[2] = { 0, 0 };
+TJoystickReport JoystickReport;
 
 inline static void SpinWait(uint32_t mks)
 {
@@ -117,6 +127,46 @@ void ScanSwitches()
 	}
 }
 
+void ScanRotaries()
+{
+	static int32_t rotaryDelays[6] = { 0, 0, 0, 0, 0, 0 };
+	static uint8_t rotaryStates[6] = { 0, 0, 0, 0, 0, 0 };
+	
+	//	static int8_t rotary[3] = { 0, 0, 0 };
+
+	uint32_t time = HAL_GetTick();
+
+	for (uint8_t i = 0; i < ROTS*2; i++)
+	{
+		uint8_t a_state = HAL_GPIO_ReadPin(rot_gpio_a[i], rot_pins_a[i]);
+		uint8_t b_state = HAL_GPIO_ReadPin(rot_gpio_b[i], rot_pins_b[i]);
+
+		if (rotaryDelays[i] && time - rotaryDelays[i] > 2)
+		{
+			if (a_state != rotaryStates[0])
+			{
+				if (a_state == b_state)
+				{
+					SetBit(rot_bits_up[i]);
+				}
+				else
+				{
+					SetBit(rot_bits_dn[i]);
+				}
+			}
+
+			rotaryDelays[i] = 0;
+			rotaryStates[i] = a_state;
+		}
+
+		if (rotaryDelays[i] == 0 && a_state != rotaryStates[i])
+		{
+			rotaryDelays[i] = time;
+		}
+	}
+}
+
+/*
 static void StoreReport()
 {
 	prevReport[0] = JoystickReport.bits[0];
@@ -127,7 +177,14 @@ int IsReportChanged()
 {
 	return JoystickReport.bits[0] != prevReport[0] || JoystickReport.bits[1] != prevReport[1];
 }
+*/
 
+void CleanRotators()
+{
+
+}
+
+/*
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	switch (GPIO_Pin)
@@ -175,6 +232,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		break;
 	}
 }
+*/
 
 static void MX_GPIO_Init(void)
 {
@@ -182,10 +240,11 @@ static void MX_GPIO_Init(void)
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	/* GPIO Ports Clock Enable */
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-	__HAL_RCC_GPIOD_CLK_ENABLE();
+//	__HAL_RCC_GPIOD_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_AFIO_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
 
 	/*Configure GPIO pins : PC13 PC14 PC15 */
 	GPIO_InitStruct.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
@@ -217,40 +276,42 @@ static void MX_GPIO_Init(void)
 	GPIO_InitStruct.Pin =  GPIO_PIN_5 | GPIO_PIN_12;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	/*Configure ROT SW pins : PA9 */
 	GPIO_InitStruct.Pin = GPIO_PIN_9;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	/*Configure ROT DIR/SW pins : PB3 PB6 PB8 PB13 PB15  */
 	GPIO_InitStruct.Pin = GPIO_PIN_3 | GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_13 | GPIO_PIN_15;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	/*Configure ROT DIR/SW pins : PA10 */
 	GPIO_InitStruct.Pin = GPIO_PIN_10;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	/*Configure ROT INT pins : PB4 PB7 PB9 PB14*/
 	GPIO_InitStruct.Pin = GPIO_PIN_4 | GPIO_PIN_7 | GPIO_PIN_9 | GPIO_PIN_14;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	/*Configure ROT INT pins : PA8 PA15 */
 	GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_15;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	/*Set rotator switch to ON */
@@ -258,10 +319,11 @@ static void MX_GPIO_Init(void)
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 
 	/*Set rotator dir to ON */
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_3 | GPIO_PIN_13 | GPIO_PIN_15, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10 | GPIO_PIN_8 | GPIO_PIN_15, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_3 | GPIO_PIN_13 | GPIO_PIN_15, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10 | GPIO_PIN_8 | GPIO_PIN_15, GPIO_PIN_SET);
 
 	/* EXTI interrupt init*/
+	/*
 	HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
@@ -270,6 +332,7 @@ static void MX_GPIO_Init(void)
 
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	*/
 }
 
 
@@ -277,20 +340,31 @@ extern USBD_HandleTypeDef USBD_Device;
 
 void JoystickCycle()
 {
-	uint32_t start = HAL_GetTick();
+	uint32_t lastUsbSent = 0;
+	TJoystickReport sendBuffer;
 
-	while (HAL_GetTick() - start < 10)
+	for(;;)
 	{
 		SpinWait(50);
+		ScanRotaries();
 		ScanButtons();
 		ScanSwitches();
-	}
 
-	//	if (IsReportChanged())
-		if(USBD_CUSTOM_HID_SendReport(&USBD_Device, JoystickReport.buffer, 8) == USBD_OK)
-	{
-		StoreReport();
-		CleanReport();
+		if (HAL_GetTick() - lastUsbSent > 10)
+		{
+			sendBuffer.bits[0] = JoystickReport.bits[0];
+			sendBuffer.bits[1] = JoystickReport.bits[1];
+
+			if (USBD_CUSTOM_HID_SendReport(&USBD_Device, sendBuffer.buffer, 8) == USBD_OK)
+			{
+				CleanRotators();
+				CleanReport();
+
+				lastUsbSent = HAL_GetTick();
+			}
+		}
+
+		SpinWait(168);
 	}
 }
 
