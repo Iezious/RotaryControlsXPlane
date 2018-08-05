@@ -1,0 +1,27 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarminJoystick.F407", "GarminJoystick.F407\GarminJoystick.F407.vcxproj", "{C4697BA3-98DF-4AEA-8973-0497F6494F5C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4697BA3-98DF-4AEA-8973-0497F6494F5C}.Debug|x64.ActiveCfg = Debug|Win32
+		{C4697BA3-98DF-4AEA-8973-0497F6494F5C}.Debug|x86.ActiveCfg = Debug|Win32
+		{C4697BA3-98DF-4AEA-8973-0497F6494F5C}.Debug|x86.Build.0 = Debug|Win32
+		{C4697BA3-98DF-4AEA-8973-0497F6494F5C}.Release|x64.ActiveCfg = Release|Win32
+		{C4697BA3-98DF-4AEA-8973-0497F6494F5C}.Release|x86.ActiveCfg = Release|Win32
+		{C4697BA3-98DF-4AEA-8973-0497F6494F5C}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0B4E850-068C-421F-B92C-9F76EE2AE022}
+	EndGlobalSection
+EndGlobal
