@@ -549,6 +549,12 @@
     <ClCompile Include="stm32F1xx_it.c">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="$(BSP_ROOT)\STM32_USB_Device_Library\Class\CustomHID\Src\usbd_customhid.c">
+      <Filter>Source files\Device-specific files\USB Device</Filter>
+    </ClCompile>
+    <ClInclude Include="$(BSP_ROOT)\STM32_USB_Device_Library\Class\CustomHID\Inc\usbd_customhid.h">
+      <Filter>Header files\Device-specific files\USB Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="usbd_custom_hid_if.h">
