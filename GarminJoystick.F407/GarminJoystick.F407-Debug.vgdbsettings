@@ -103,6 +103,7 @@
     <ShowMessageAfterExecuting>true</ShowMessageAfterExecuting>
   </CustomShortcuts>
   <UserDefinedVariables />
+  <ImportedPropertySheets />
   <CodeSense>
     <Enabled>Unknown</Enabled>
     <ExtraSettings>
@@ -113,4 +114,5 @@
       <Enabled>false</Enabled>
     </CodeAnalyzerSettings>
   </CodeSense>
+  <ProgramArgumentsSuggestions />
 </VisualGDBProjectSettings2>

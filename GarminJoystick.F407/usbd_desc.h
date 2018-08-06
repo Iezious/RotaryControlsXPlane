@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    USB_Device/CDC_Standalone/Inc/usbd_desc.h
   * @author  MCD Application Team
-  * @version V1.2.2
-  * @date    25-May-2015
+  * @version V1.1.0
+  * @date    05-June-2015
   * @brief   Header for usbd_desc.c module
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define         DEVICE_ID1          (0x1FFF7A10)
-#define         DEVICE_ID2          (0x1FFF7A14)
-#define         DEVICE_ID3          (0x1FFF7A18)
+#define         DEVICE_ID1          (0x1FFFF7E8)
+#define         DEVICE_ID2          (0x1FFFF7EC)
+#define         DEVICE_ID3          (0x1FFFF7F0)
 
 #define  USB_SIZ_STRING_SERIAL       0x1A
 /* Exported macro ------------------------------------------------------------*/

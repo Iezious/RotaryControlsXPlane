@@ -38,11 +38,10 @@
       <UniqueIdentifier>{e676f007-984b-4667-a60e-367db489e375}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ClCompile Include="GarminJoystick.F407.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="usbd_cdc_if.c">
       <Filter>Source files</Filter>
     </ClCompile>
@@ -709,5 +708,8 @@
     <None Include="stm32.xml">
       <Filter>VisualGDB settings</Filter>
     </None>
+    <ClCompile Include="GarminJoystick.F407.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
