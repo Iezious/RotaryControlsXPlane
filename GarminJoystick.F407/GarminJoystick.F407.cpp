@@ -7,7 +7,7 @@ extern "C"
 #endif
 	#include <usbd_core.h>
 	#include <usbd_cdc.h>
-	#include "usbd_cdc_if.h"
+	#include "usbd_conf.h"
 	#include <usbd_desc.h>
 
 	USBD_HandleTypeDef USBD_Device;

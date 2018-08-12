@@ -36,7 +36,7 @@
 #define USBD_PID                      0x5741
 #define USBD_LANGID_STRING            0x409
 #define USBD_MANUFACTURER_STRING      "Iezious"
-#define USBD_PRODUCT_FS_STRING        "Garmin 503 Joyslick"
+#define USBD_PRODUCT_FS_STRING        "Garmin 530 Joyslick"
 #define USBD_CONFIGURATION_FS_STRING  "HID Config"
 #define USBD_INTERFACE_FS_STRING      "HID Interface"
 

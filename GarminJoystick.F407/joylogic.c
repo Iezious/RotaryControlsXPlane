@@ -11,15 +11,35 @@
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal.h"
 
-#define ROWS    5
+#define BUTTONS 17
 #define LINES   5
 #define ROTS    3
 
-GPIO_TypeDef* mx_line_gpio[LINES] = { MX_LINE_0_GPIO, MX_LINE_1_GPIO, MX_LINE_2_GPIO, MX_LINE_3_GPIO, MX_LINE_4_GPIO };
-uint16_t mx_line_pins[LINES] = { MX_LINE_0_PIN, MX_LINE_1_PIN, MX_LINE_2_PIN, MX_LINE_3_PIN, MX_LINE_4_PIN };
+GPIO_TypeDef* mx_button_gpio[BUTTONS] = { 
+	BUTTON_1_GPIO, BUTTON_2_GPIO, BUTTON_3_GPIO, BUTTON_4_GPIO, BUTTON_5_GPIO,
+	BUTTON_6_GPIO, BUTTON_7_GPIO, BUTTON_8_GPIO, BUTTON_9_GPIO, BUTTON_10_GPIO,
+	BUTTON_11_GPIO, BUTTON_12_GPIO, BUTTON_13_GPIO,	BUTTON_14_GPIO,	BUTTON_15_GPIO,
+	BUTTON_16_GPIO,	BUTTON_17_GPIO
+};
 
-GPIO_TypeDef* mx_row_gpio[ROWS] = { MX_ROW_0_GPIO, MX_ROW_1_GPIO, MX_ROW_2_GPIO, MX_ROW_3_GPIO, MX_ROW_4_GPIO };
-uint16_t mx_row_pins[ROWS] = { MX_ROW_0_PIN, MX_ROW_1_PIN, MX_ROW_2_PIN, MX_ROW_3_PIN, MX_ROW_4_PIN };
+uint16_t mx_button_pins[BUTTONS] = { 
+	BUTTON_1_PIN, BUTTON_2_PIN, BUTTON_3_PIN, BUTTON_4_PIN, BUTTON_5_PIN,
+	BUTTON_6_PIN, BUTTON_7_PIN, BUTTON_8_PIN, BUTTON_9_PIN, BUTTON_10_PIN,
+	BUTTON_11_PIN, BUTTON_12_PIN, BUTTON_13_PIN,	BUTTON_14_PIN,	BUTTON_15_PIN,
+	BUTTON_16_PIN,	BUTTON_17_PIN
+};
+
+uint8_t mx_buttons[2][BUTTONS] = {
+	{ 
+		MX_BUTTON_0_0, MX_BUTTON_0_1, MX_BUTTON_0_2, MX_BUTTON_0_3, MX_BUTTON_0_4, MX_BUTTON_0_5, MX_BUTTON_0_6, MX_BUTTON_0_7, MX_BUTTON_0_8, 
+		MX_BUTTON_0_9, MX_BUTTON_0_10, MX_BUTTON_0_11, MX_BUTTON_0_12, MX_BUTTON_0_13, MX_BUTTON_0_14, MX_BUTTON_0_15, MX_BUTTON_0_16 
+	},
+	{ 
+		MX_BUTTON_1_0, MX_BUTTON_1_1, MX_BUTTON_1_2, MX_BUTTON_1_3, MX_BUTTON_1_4, MX_BUTTON_1_5, MX_BUTTON_1_6, MX_BUTTON_1_7, MX_BUTTON_1_8,
+		MX_BUTTON_1_9, MX_BUTTON_1_10, MX_BUTTON_1_11, MX_BUTTON_1_12, MX_BUTTON_1_13, MX_BUTTON_1_14, MX_BUTTON_1_15, MX_BUTTON_1_16 
+	},
+};	
+
 
 GPIO_TypeDef* rot_sw_gpio[ROTS] = { ROT1_GPIO_C, ROT2_GPIO_C, ROT3_GPIO_C };
 uint16_t rot_sw_pins[ROTS] = { ROT1_PIN_C, ROT2_PIN_C, ROT3_PIN_C };
@@ -35,33 +55,6 @@ uint8_t rot_bits_up[ROTS * 2] = { ROT1_L1_UP, ROT1_L2_UP, ROT2_L1_UP, ROT2_L2_UP
 uint8_t rot_bits_dn[ROTS * 2] = { ROT1_L1_DN, ROT1_L2_DN, ROT2_L1_DN, ROT2_L2_DN, ROT3_L1_DN, ROT3_L2_DN };
 
 
-uint8_t mx_buttons[LINES*ROWS] = {
-	MX_BUTTON_0_0,
-	MX_BUTTON_0_1,
-	MX_BUTTON_0_2,
-	MX_BUTTON_0_3,
-	MX_BUTTON_0_4,
-	MX_BUTTON_1_0,
-	MX_BUTTON_1_1,
-	MX_BUTTON_1_2,
-	MX_BUTTON_1_3,
-	MX_BUTTON_1_4,
-	MX_BUTTON_2_0,
-	MX_BUTTON_2_1,
-	MX_BUTTON_2_2,
-	MX_BUTTON_2_3,
-	MX_BUTTON_2_4,
-	MX_BUTTON_3_0,
-	MX_BUTTON_3_1,
-	MX_BUTTON_3_2,
-	MX_BUTTON_3_3,
-	MX_BUTTON_3_4,
-	MX_BUTTON_4_0,
-	MX_BUTTON_4_1,
-	MX_BUTTON_4_2,
-	MX_BUTTON_4_3,
-	MX_BUTTON_4_4,
-};
 
 typedef union
 {
@@ -103,19 +96,13 @@ static inline void ResetBit(uint16_t bit)
 
 void ScanButtons()
 {
-	for (uint8_t line = 0; line < LINES; line++)
+	uint8_t* buttonIndexes = HAL_GPIO_ReadPin(SELECTOR_GPIO, SELECTOR_PIN) == GPIO_PIN_SET
+		? mx_buttons[0] : mx_buttons[1];
+
+	for (uint8_t i = 0; i < BUTTONS; i++)
 	{
-		HAL_GPIO_WritePin(mx_line_gpio[line], mx_line_pins[line], GPIO_PIN_SET);
-		SpinWait(5);
-
-		for (uint8_t row = 0; row < ROWS; row++)
-		{
-			if (HAL_GPIO_ReadPin(mx_row_gpio[row], mx_row_pins[row]) == GPIO_PIN_SET)
-				SetBit(mx_buttons[line*ROWS + row]);
-		}
-
-		HAL_GPIO_WritePin(mx_line_gpio[line], mx_line_pins[line], GPIO_PIN_RESET);
-		SpinWait(5);
+		if (HAL_GPIO_ReadPin(mx_button_gpio[i], mx_button_pins[i]) == GPIO_PIN_SET)
+			buttonIndexes[i];
 	}
 }
 
@@ -241,11 +228,12 @@ static void MX_GPIO_Init(void)
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	/* GPIO Ports Clock Enable */
-	//	__HAL_RCC_GPIOD_CLK_ENABLE();
-		__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_AFIO_CLK_ENABLE();
+		
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOE_CLK_ENABLE();
 
 	/*Configure GPIO pins : PC13 PC14 PC15 */
 	GPIO_InitStruct.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
