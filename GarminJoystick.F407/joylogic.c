@@ -38,7 +38,10 @@ uint8_t mx_buttons[2][BUTTONS] = {
 		MX_BUTTON_1_0, MX_BUTTON_1_1, MX_BUTTON_1_2, MX_BUTTON_1_3, MX_BUTTON_1_4, MX_BUTTON_1_5, MX_BUTTON_1_6, MX_BUTTON_1_7, MX_BUTTON_1_8,
 		MX_BUTTON_1_9, MX_BUTTON_1_10, MX_BUTTON_1_11, MX_BUTTON_1_12, MX_BUTTON_1_13, MX_BUTTON_1_14, MX_BUTTON_1_15, MX_BUTTON_1_16 
 	},
-};	
+};
+
+#define LED_ON	HAL_GPIO_WritePin(LED_GPIO, LED_PIN, GPIO_PIN_RESET)
+#define LED_OFF	HAL_GPIO_WritePin(LED_GPIO, LED_PIN, GPIO_PIN_SET)
 
 
 GPIO_TypeDef* rot_sw_gpio[ROTS] = { ROT1_GPIO_C, ROT2_GPIO_C, ROT3_GPIO_C };
@@ -102,7 +105,7 @@ void ScanButtons()
 	for (uint8_t i = 0; i < BUTTONS; i++)
 	{
 		if (HAL_GPIO_ReadPin(mx_button_gpio[i], mx_button_pins[i]) == GPIO_PIN_SET)
-			buttonIndexes[i];
+			SetBit(buttonIndexes[i]);
 	}
 }
 
@@ -228,84 +231,68 @@ static void MX_GPIO_Init(void)
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	/* GPIO Ports Clock Enable */
-		
+
+	__HAL_RCC_GPIOH_CLK_ENABLE();
+
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 	__HAL_RCC_GPIOE_CLK_ENABLE();
 
-	/*Configure GPIO pins : PC13 PC14 PC15 */
-	GPIO_InitStruct.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+	
+	GPIO_InitStruct.Pin = SELECTOR_PIN;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	HAL_GPIO_Init(SELECTOR_GPIO, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = LED_PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	HAL_GPIO_Init(LED_GPIO, &GPIO_InitStruct);
 
-	/*Configure GPIO pins : PA0 PA1 */
-	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	HAL_GPIO_WritePin(LED_GPIO, LED_PIN, GPIO_PIN_RESET);
 
-	/*Configure BUTTON pins : PA2 PA3 PA4 PA5 PA6 PA7 */
-	GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	for (uint8_t i = 0; i < BUTTONS; i++)
+	{
+		GPIO_InitStruct.Pin = mx_button_pins[i];
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+		GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+		HAL_GPIO_Init(mx_button_gpio[i], &GPIO_InitStruct);
+	}
 
-	/*Configure BUTTON pins : PB0 PB1 PB2 PB10 PB11 */
-	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_10 | GPIO_PIN_11;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	for (uint8_t i = 0; i < ROTS; i++)
+	{
+		GPIO_InitStruct.Pin = rot_sw_pins[i];
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
+		HAL_GPIO_Init(rot_sw_gpio[i], &GPIO_InitStruct);
 
-	/*Configure ROT SW pins : PB5 PB12 */
-	GPIO_InitStruct.Pin =  GPIO_PIN_5 | GPIO_PIN_12;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		HAL_GPIO_WritePin(rot_sw_gpio[i], rot_sw_pins[i], GPIO_PIN_SET);
+	}
 
-	/*Configure ROT SW pins : PA9 */
-	GPIO_InitStruct.Pin = GPIO_PIN_9;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	for (uint8_t i = 0; i < ROTS * 2; i++)
+	{
+		GPIO_InitStruct.Pin = rot_pins_a[i];
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
+		HAL_GPIO_Init(rot_gpio_a[i], &GPIO_InitStruct);
 
-	/*Configure ROT DIR/SW pins : PB3 PB6 PB8 PB13 PB15  */
-	GPIO_InitStruct.Pin = GPIO_PIN_3 | GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_13 | GPIO_PIN_15;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		GPIO_InitStruct.Pin = rot_pins_b[i];
+		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
+		HAL_GPIO_Init(rot_gpio_b[i], &GPIO_InitStruct);
 
-	/*Configure ROT DIR/SW pins : PA10 */
-	GPIO_InitStruct.Pin = GPIO_PIN_10;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+		HAL_GPIO_WritePin(rot_gpio_a[i], rot_pins_a[i], GPIO_PIN_SET);
+		HAL_GPIO_WritePin(rot_gpio_b[i], rot_pins_b[i], GPIO_PIN_SET);
+	}
 
-	/*Configure ROT INT pins : PB4 PB7 PB9 PB14*/
-	GPIO_InitStruct.Pin = GPIO_PIN_4 | GPIO_PIN_7 | GPIO_PIN_9 | GPIO_PIN_14;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-	/*Configure ROT INT pins : PA8 PA15 */
-	GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_15;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	/*Set rotator switch to ON */
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5 | GPIO_PIN_12, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 
 	/*Set rotator dir to ON */
 	//	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_3 | GPIO_PIN_13 | GPIO_PIN_15, GPIO_PIN_SET);
@@ -330,9 +317,12 @@ extern USBD_HandleTypeDef USBD_Device;
 void JoystickCycle()
 {
 	uint32_t lastUsbSent = 0;
+	uint32_t lastLed = 0;
+	uint8_t ledon = 0;
+
 	TJoystickReport sendBuffer;
 
-	for (;;)
+	for (;;)	
 	{
 		SpinWait(50);
 		ScanRotaries();
@@ -351,6 +341,17 @@ void JoystickCycle()
 
 				lastUsbSent = HAL_GetTick();
 			}
+		}
+
+		if (HAL_GetTick() - lastLed > 1000)
+		{
+			if (ledon)
+				LED_ON;
+			else
+				LED_OFF;
+
+			ledon = !ledon;
+			lastLed = HAL_GetTick();
 		}
 
 		SpinWait(168);

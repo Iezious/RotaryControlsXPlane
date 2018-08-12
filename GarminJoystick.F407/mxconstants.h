@@ -67,6 +67,8 @@
 #define SELECTOR_GPIO	GPIOE
 #define SELECTOR_PIN	GPIO_PIN_1
 
+#define LED_GPIO		GPIOB
+#define LED_PIN			GPIO_PIN_9
 
 
 #define BUTTON_1_GPIO	GPIOB
