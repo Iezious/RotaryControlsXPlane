@@ -1,6 +1,9 @@
 #include "stm32f4xx_hal_rcc.h"
 #include "stm32f4xx_hal_pwr_ex.h"
 #include "stm32f4xx_hal_cortex.h"
+#include "../GarminJoystick/joylogic.h"
+#include "../GarminJoystick/usbd_hid.h"
+#include "../GarminJoystick/usbd_custom_hid_if.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -14,7 +17,6 @@ extern "C"
 	void SysTick_Handler(void);
 	void OTG_FS_IRQHandler(void);
 	void OTG_HS_IRQHandler(void);
-	extern PCD_HandleTypeDef hpcd;
 	void _Error_Handler(char *file, int line);
 	
 	int VCP_read(void *pBuffer, int size);
@@ -81,27 +83,6 @@ static void SystemClock_Config(void)
 	
 }
 
-
-void SysTick_Handler(void)
-{
-	HAL_IncTick();
-	HAL_SYSTICK_IRQHandler();
-}
-
-#ifdef USE_USB_FS
-void OTG_FS_IRQHandler(void)
-{
-	HAL_PCD_IRQHandler(&hpcd);
-}
-#elif defined(USE_USB_HS)
-void OTG_HS_IRQHandler(void)
-{
-	HAL_PCD_IRQHandler(&hpcd);
-}
-#else
-#error USB peripheral type not defined
-#endif
-
 /*
 	This is a basic USB CDC device sample based on the ST USB library.
 	To test it out:
@@ -114,22 +95,18 @@ void OTG_HS_IRQHandler(void)
 int main(void)
 {
 	HAL_Init();
-	SystemClock_Config();
-	USBD_Init(&USBD_Device, &VCP_Desc, 0);
 
-	USBD_RegisterClass(&USBD_Device, &USBD_CDC);
-	USBD_CDC_RegisterInterface(&USBD_Device, &USBD_CDC_GarminJoystick.F407_fops);
+	SystemClock_Config();
+
+	JoystickInit();
+
+
+	USBD_Init(&USBD_Device, &VCP_Desc, 0);
+	USBD_RegisterClass(&USBD_Device, &USBD_CUSTOM_HID);
+	USBD_CUSTOM_HID_RegisterInterface(&USBD_Device, &USBD_CustomHID_fops_FS);
 	USBD_Start(&USBD_Device);
 
-	char byte;
-	for (;;)
-	{
-		if (VCP_read(&byte, 1) != 1)
-			continue;
-		VCP_write("\r\nYou typed ", 12);
-		VCP_write(&byte, 1);
-		VCP_write("\r\n", 2);
-	}
+	JoystickCycle();
 }
 
 void _Error_Handler(char *file, int line)

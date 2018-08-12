@@ -41,8 +41,8 @@
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
-extern DMA_HandleTypeDef hdma_i2c1_rx;
-extern DMA_HandleTypeDef hdma_i2c1_tx;
+//extern DMA_HandleTypeDef hdma_i2c1_rx;
+//extern DMA_HandleTypeDef hdma_i2c1_tx;
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
@@ -250,6 +250,8 @@ void EXTI3_IRQHandler(void)
   /* USER CODE END EXTI3_IRQn 1 */
 }
 
+#ifdef EEPROM_DMA_STREAMS
+
 /**
 * @brief This function handles DMA1 stream0 global interrupt.
 */
@@ -277,6 +279,8 @@ void DMA1_Stream6_IRQHandler(void)
 
   /* USER CODE END DMA1_Stream6_IRQn 1 */
 }
+
+#endif
 
 /**
 * @brief This function handles EXTI line[9:5] interrupts.
